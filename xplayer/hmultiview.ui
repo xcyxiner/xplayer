@@ -13,20 +13,31 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="HVideoWidget" name="player">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>130</y>
-     <width>53</width>
-     <height>15</height>
+     <x>20</x>
+     <y>10</y>
+     <width>361</width>
+     <height>271</height>
     </rect>
    </property>
-   <property name="text">
-    <string>MV</string>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HVideoWidget</class>
+   <extends>QFrame</extends>
+   <header>hvideowidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

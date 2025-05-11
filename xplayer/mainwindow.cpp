@@ -3,7 +3,6 @@
 #include "avdef.h"
 #include "hopenmediadlg.h"
 #include "QMessageBox"
-#include <iostream>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -26,13 +25,8 @@ void MainWindow::on_actionopen_File_triggered()
 void MainWindow::OpenMediaDlg(int index)
 {
     HOpenMediaDlg dlg(this);
-    //后面存储index
     dlg.setCurrentIndex(index);
     if(dlg.exec()==QDialog::Accepted){
-        // std::cout<<dlg.media.src<<std::endl;
-        // QMessageBox msgBox;
-        // msgBox.setText("dialog accepted");
-        // msgBox.exec();
-
+        ui->mv->play(dlg.media);
     }
 }

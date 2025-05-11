@@ -14,7 +14,7 @@
    <string>xplayer播放器</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="HMultiView" name="widget" native="true">
+   <widget class="HMultiView" name="mv" native="true">
     <property name="geometry">
      <rect>
       <x>0</x>

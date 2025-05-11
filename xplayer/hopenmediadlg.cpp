@@ -31,11 +31,6 @@ void HOpenMediaDlg::accept()
     QDialog::accept();
 }
 
-void HOpenMediaDlg::on_buttonBox_accepted()
-{
-    this->accept();
-}
-
 
 void HOpenMediaDlg::on_pushButton_clicked()
 {

@@ -15,5 +15,5 @@ HMultiView::~HMultiView()
 
 void HMultiView::play(HMedia &media)
 {
-
+    ui->player->open(media);
 }
