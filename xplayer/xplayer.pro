@@ -19,6 +19,9 @@ SOURCES += \
 
 HEADERS += \
     avdef.h \
+    ffmpeg_util.h \
+    ffmpeg_util.h \
+    ffmpeg_util.h \
     hffplayer.h \
     hmedia.h \
     hmultiview.h \
@@ -37,3 +40,19 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+INCLUDEPATH +=$$PWD/3rd/include
+win32 {
+    win32-msvc{
+        LIBS += -lavformat      \
+                -lavdevice      \
+                -lavcodec       \
+                -lswresample    \
+                -lswscale       \
+                -lavutil        \
+
+        DESTDIR = $$PWD/3rd/bin/msvc
+        LIBS += -L$$PWD/3rd/lib/msvc
+    }
+}
