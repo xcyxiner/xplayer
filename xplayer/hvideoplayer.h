@@ -10,6 +10,8 @@ public:
 
 public:
     void set_media(HMedia& media);
+
+    virtual int start()=0;
 public:
     HMedia media;
 
