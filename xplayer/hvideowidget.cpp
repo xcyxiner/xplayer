@@ -24,4 +24,5 @@ void HVideoWidget::start()
 {
     this->pImpl_player=new HFFPlayer();
     this->pImpl_player->set_media(this->media);
+    this->pImpl_player->start();
 }
