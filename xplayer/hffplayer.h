@@ -20,6 +20,16 @@ private:
 
 private:
     AVFormatContext* fmt_ctx;
+    AVDictionary* fmt_opts;
+
+    AVCodecContext* codec_ctx;
+    AVDictionary*   codec_opts;
+
+    int video_stream_index;
+    int audio_stream_index;
+    int subtitle_stream_index;
+
+
 };
 
 #endif // HFFPLAYER_H
