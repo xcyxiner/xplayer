@@ -1,4 +1,5 @@
 #include "hffplayer.h"
+#include <iostream>
 
 HFFPlayer::HFFPlayer() {
 
@@ -17,7 +18,7 @@ int HFFPlayer::start()
 bool HFFPlayer::doPrepare()
 {
     int ret=open();
-    return ret;
+    return true;
 }
 
 int HFFPlayer::open()
@@ -150,5 +151,68 @@ int HFFPlayer::open()
         return ret;
     }
 
+    // 原始视频宽高以及像素格式
+    int sw,sh,dw,dh;
+    sw=codec_ctx->width;
+    sh=codec_ctx->height;
+    src_pix_fmt=codec_ctx->pix_fmt;
+    if(sw<=0|| sh <=0 || src_pix_fmt==AV_PIX_FMT_NONE){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        if(codec_ctx){
+            avcodec_free_context(&codec_ctx);
+            codec_ctx=NULL;
+        }
+        ret=-45;
+        return ret;
+    }
 
+    //目标视频宽高以及像素格式
+    dw=sw&(~3);
+    dh=sh&(~3);
+    dst_pix_fmt=AV_PIX_FMT_YUV420P;
+
+    //图像缩放以及像素格式转换
+    sws_ctx=sws_getContext(sw,sh,src_pix_fmt,dw,dh,dst_pix_fmt,SWS_BICUBIC,NULL,NULL,NULL);
+    if(sws_ctx==NULL){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        if(codec_ctx){
+            avcodec_free_context(&codec_ctx);
+            codec_ctx=NULL;
+        }
+        ret=-50;
+        return ret;
+    }
+
+
+    //视频帧存储
+    packet=av_packet_alloc();
+    frame=av_frame_alloc();
+
+    hframe.w=dw;
+    hframe.h=dh;
+
+    hframe.buf.resize(dw*dh*4);
+
+    if(dst_pix_fmt==AV_PIX_FMT_YUV420P){
+        hframe.type=PIX_FMT_IYUV;
+        hframe.bpp=12;
+        int y_size=dw*dh;
+        hframe.buf.len=y_size*3/2;
+
+        data[0]=(uint8_t*)hframe.buf.base;
+        data[1]=data[0]+y_size;
+        data[2]=data[1]+y_size/4;
+        linesize[0]=dw;
+        linesize[1]=linesize[2]=dw/2;
+    }
+
+    return ret;
 }
