@@ -7,6 +7,7 @@ HVideoWidget::HVideoWidget(QWidget *parent)
     , ui(new Ui::HVideoWidget)
 {
     ui->setupUi(this);
+
 }
 
 HVideoWidget::~HVideoWidget()
