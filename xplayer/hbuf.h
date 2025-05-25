@@ -17,6 +17,11 @@ public:
         this->len=len;
         cleanup_ = false;
     }
+
+    HBuf(size_t cap){
+        resize(cap);
+    }
+
     ~HBuf(){
         free(base);
         base=NULL;

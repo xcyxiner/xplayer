@@ -15,6 +15,7 @@ SOURCES += \
     hframe.cpp \
     hmultiview.cpp \
     hopenmediadlg.cpp \
+    hringbuf.cpp \
     hthread.cpp \
     hvideoplayer.cpp \
     hvideowidget.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     hmedia.h \
     hmultiview.h \
     hopenmediadlg.h \
+    hringbuf.h \
     hthread.h \
     hvideoplayer.h \
     hvideowidget.h \
