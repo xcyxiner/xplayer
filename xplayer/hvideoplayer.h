@@ -15,6 +15,12 @@ public:
 public:
     HMedia media;
 
+    int32_t width;
+    int32_t height;
+    int64_t duration;
+    int64_t start_time;
+    int eof;
+    int error;
 };
 
 #endif // HVIDEOPLAYER_H

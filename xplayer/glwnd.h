@@ -8,11 +8,15 @@
 
 class GLWnd :  public HVideoWnd,HGLWidget
 {
-    Q_OBJECT
 public:
     explicit GLWnd(QWidget *parent = nullptr);
 
 signals:
+
+    // HVideoWnd interface
+public:
+    virtual void setGeometry(const QRect &rc) override;
+    virtual void update() override;
 };
 
 #endif // GLWND_H
