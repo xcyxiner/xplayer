@@ -5,7 +5,6 @@
 #include "QtOpenGLWidgets/qopenglwidget.h"
 class HGLWidget : public QOpenGLWidget
 {
-    Q_OBJECT
 public:
     explicit HGLWidget(QWidget *parent = nullptr);
 
