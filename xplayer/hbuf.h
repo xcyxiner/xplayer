@@ -23,8 +23,10 @@ public:
     }
 
     ~HBuf(){
-        free(base);
-        base=NULL;
+        if (base) {
+            // free(base);
+            base = NULL;
+        }
     }
     bool isNull();
 

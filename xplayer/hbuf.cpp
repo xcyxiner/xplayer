@@ -26,7 +26,7 @@ void HBuf::resize(size_t cap)
 void HBuf::copy(void *data, size_t len)
 {
     resize(len);
-    memcmp(base,data,len);
+    memcpy(base,data,len);
 }
 
 bool HBuf::isNull()

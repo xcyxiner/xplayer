@@ -215,6 +215,10 @@ int HFFPlayer::open()
         linesize[1]=linesize[2]=dw/2;
     }
 
+    if (video_stream->avg_frame_rate.num && video_stream->avg_frame_rate.den) {
+        fps = video_stream->avg_frame_rate.num / video_stream->avg_frame_rate.den;
+    }
+
     return ret;
 }
 

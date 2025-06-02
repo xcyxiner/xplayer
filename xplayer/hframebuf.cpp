@@ -46,11 +46,12 @@ int HFrameBuf::pop(HFrame *pFrame)
         return -20;
     }
 
-    HFrame& frame=frames.front();
+    HFrame frame = std::move(frames.front());
     frames.pop_front();
-    free(frame.buf.len);
 
-    if(frame.isNull())return -30;
+    if(frame.isNull()){
+        return -30;
+    }
 
     pFrame->copy(frame);
     return 0;

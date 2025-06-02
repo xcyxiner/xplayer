@@ -17,6 +17,10 @@ signals:
 public:
     virtual void setGeometry(const QRect &rc) override;
     virtual void update() override;
+
+    // QOpenGLWidget interface
+protected:
+    virtual void paintGL() override;
 };
 
 #endif // GLWND_H

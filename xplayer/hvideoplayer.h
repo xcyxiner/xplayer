@@ -3,6 +3,7 @@
 
 #include "hframebuf.h"
 #include "hmedia.h"
+#define DEFAULT_FPS         25
 class HVideoPlayer
 {
 public:
@@ -39,6 +40,7 @@ public:
     int eof;
     int error;
 
+    int         fps;
 protected:
     HFrameBuf frame_buf;
 };

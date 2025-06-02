@@ -13,3 +13,14 @@ void GLWnd::update()
 {
     HGLWidget::update();
 }
+
+void GLWnd::paintGL()
+{
+    HGLWidget::paintGL();
+
+    if(this->last_frame.isNull()){
+
+    }else{
+        drawFrame(&this->last_frame);
+    }
+}

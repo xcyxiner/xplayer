@@ -24,7 +24,7 @@ private:
 
 public:
     aspect_ratio_t aspect_ratio;
-
+ int     fps;
 public slots:
     void open(HMedia& media);
     void start();
