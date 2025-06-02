@@ -23,6 +23,17 @@ void HBuf::resize(size_t cap)
     cleanup_=true;
 }
 
+void HBuf::copy(void *data, size_t len)
+{
+    resize(len);
+    memcpy(base,data,len);
+}
+
+bool HBuf::isNull()
+{
+    return base==NULL||len==0;
+}
+
 char *HBuf::getBase() const
 {
     return base;

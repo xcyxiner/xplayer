@@ -11,6 +11,7 @@ HFFPlayer::HFFPlayer() {
 
 int HFFPlayer::start()
 {
+    quit=0;
     HThread::start();
     return 0;
 }
@@ -214,5 +215,70 @@ int HFFPlayer::open()
         linesize[1]=linesize[2]=dw/2;
     }
 
+    if (video_stream->avg_frame_rate.num && video_stream->avg_frame_rate.den) {
+        fps = video_stream->avg_frame_rate.num / video_stream->avg_frame_rate.den;
+    }
+
     return ret;
+}
+
+void HFFPlayer::doTask()
+{
+    while (!this->quit) {
+        av_init_packet(packet);
+
+        int ret=av_read_frame(this->fmt_ctx,this->packet);
+
+        if(ret!=0){
+            if(!this->quit){
+
+            }
+            av_packet_unref(this->packet);
+            return;
+        }
+
+
+        if(this->packet->stream_index!= this->video_stream_index){
+            continue;
+        }
+
+
+        ret=avcodec_send_packet(this->codec_ctx,this->packet);
+        if(ret!=0){
+            av_packet_unref(this->packet);
+            return;
+        }
+
+        ret= avcodec_receive_frame(this->codec_ctx,this->frame);
+        if(ret!=0){
+
+        }else{
+            break;
+        }
+    }
+
+    if(this->sws_ctx){
+        int h=sws_scale(this->sws_ctx,this->frame->data,
+                          this->frame->linesize,0,this->frame->height,this->data,this->linesize);
+        if(h<=0 || h != this->frame->height){
+            return;
+        }
+    }
+
+    this->push_frame(&this->hframe);
+}
+
+int HFFPlayer::stop()
+{
+    return HThread::stop();
+}
+
+int HFFPlayer::pause()
+{
+ return HThread::pause();
+}
+
+int HFFPlayer::resume()
+{
+ return HThread::resume();
 }

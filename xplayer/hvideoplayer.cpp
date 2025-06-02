@@ -7,6 +7,7 @@ HVideoPlayer::HVideoPlayer() {
     start_time = 0;
     eof = 0;
     error = 0;
+    fps=DEFAULT_FPS;
 }
 
 void HVideoPlayer::set_media(HMedia &media)

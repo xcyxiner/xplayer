@@ -42,6 +42,7 @@ void HVideoWidget::start()
 
 void HVideoWidget::onOpenSucceed()
 {
+    timer->start(1000 / (pImpl_player->fps));
     setAspectRatio(aspect_ratio);
 }
 
@@ -89,7 +90,8 @@ void HVideoWidget::onTimerUpdate()
 {
     if(this->pImpl_player==NULL)return;
     //提取一帧
-
-    // update video frame
-    videownd->update();
+    if(this->pImpl_player->pop_frame(&this->videownd->last_frame)==0){
+        // update video frame
+        videownd->update();
+    }
 }

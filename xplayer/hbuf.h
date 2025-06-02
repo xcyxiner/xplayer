@@ -23,14 +23,20 @@ public:
     }
 
     ~HBuf(){
-        free(base);
-        base=NULL;
+        if (base) {
+            // free(base);
+            base = NULL;
+        }
     }
+    bool isNull();
+
     char *getBase() const;
 
     size_t getLen() const;
 
     void resize(size_t cap);
+
+    void copy(void* data,size_t len);
 
 private:
     bool cleanup_;

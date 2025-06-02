@@ -41,6 +41,20 @@ private:
     uint8_t*        data[4];
     int             linesize[4];
     HFrame hframe;
+
+
+
+    // HThread interface
+public:
+    virtual void doTask() override;
+
+    int quit;
+
+    // HVideoPlayer interface
+public:
+    virtual int stop() override;
+    virtual int pause() override;
+    virtual int resume() override;
 };
 
 #endif // HFFPLAYER_H

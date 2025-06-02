@@ -1,7 +1,9 @@
 #ifndef HVIDEOPLAYER_H
 #define HVIDEOPLAYER_H
 
+#include "hframebuf.h"
 #include "hmedia.h"
+#define DEFAULT_FPS         25
 class HVideoPlayer
 {
 public:
@@ -12,6 +14,22 @@ public:
     void set_media(HMedia& media);
 
     virtual int start()=0;
+    virtual int stop()=0;
+    virtual int pause()=0;
+    virtual int resume()=0;
+
+    void clear_frame_cache(){
+        this->frame_buf.clear();
+    }
+
+    int push_frame(HFrame* pFrame){
+        return frame_buf.push(pFrame);
+    }
+
+    int pop_frame(HFrame* pFrame){
+        return frame_buf.pop(pFrame);
+    }
+
 public:
     HMedia media;
 
@@ -21,6 +39,10 @@ public:
     int64_t start_time;
     int eof;
     int error;
+
+    int         fps;
+protected:
+    HFrameBuf frame_buf;
 };
 
 #endif // HVIDEOPLAYER_H

@@ -13,6 +13,7 @@ SOURCES += \
     hbuf.cpp \
     hffplayer.cpp \
     hframe.cpp \
+    hframebuf.cpp \
     hmultiview.cpp \
     hopenmediadlg.cpp \
     hringbuf.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     hbuf.h \
     hffplayer.h \
     hframe.h \
+    hframebuf.h \
     hmedia.h \
     hmultiview.h \
     hopenmediadlg.h \
@@ -55,6 +57,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 
 INCLUDEPATH +=$$PWD/3rd/include
+INCLUDEPATH +=$$PWD/3rd/include/GL
 win32 {
     win32-msvc{
         LIBS += -lavformat      \
@@ -64,7 +67,12 @@ win32 {
                 -lswscale       \
                 -lavutil        \
 
+        LIBS += -lopengl32 -lglu32
+        LIBS += -lglew32
+
         DESTDIR = $$PWD/3rd/bin/msvc
         LIBS += -L$$PWD/3rd/lib/msvc
+
+
     }
 }
