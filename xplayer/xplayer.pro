@@ -13,6 +13,7 @@ SOURCES += \
     hbuf.cpp \
     hffplayer.cpp \
     hframe.cpp \
+    hframebuf.cpp \
     hmultiview.cpp \
     hopenmediadlg.cpp \
     hringbuf.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     hbuf.h \
     hffplayer.h \
     hframe.h \
+    hframebuf.h \
     hmedia.h \
     hmultiview.h \
     hopenmediadlg.h \
