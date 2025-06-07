@@ -18,3 +18,6 @@
 
 [ffmpeg播放器20(从17-19的实现)](https://juejin.cn/post/7510587921788207144)
 
+### 2.5 分支 ffmpeg_play_21
+
+[ffmpeg播放器21](https://juejin.cn/post/7512745040306520099)
