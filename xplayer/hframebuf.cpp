@@ -6,10 +6,13 @@ HFrameBuf::HFrameBuf() {
 
 int HFrameBuf::push(HFrame *pFrame)
 {
-    std::lock_guard<std::mutex> locker(this->mutex);
+    std::unique_lock<std::mutex> locker(this->mutex);
     if(pFrame->isNull())
         return -10;
 
+    this->buffer_not_full.wait(locker,[this](){
+        return frames.size() < cache_num;
+    });
 
     if(frames.size()>=(size_t)cache_num){
         HFrame frame = std::move(frames.front()); // 移动所有权
@@ -34,12 +37,15 @@ int HFrameBuf::push(HFrame *pFrame)
     frame.buf.len=pFrame->buf.len;
     frame.copy(*pFrame);
     frames.push_back(frame);
+
+    locker.unlock();
+    this->buffer_not_empty.notify_one();
     return ret;
 }
 
 int HFrameBuf::pop(HFrame *pFrame)
 {
-    std::lock_guard<std::mutex> locker(this->mutex);
+    std::unique_lock<std::mutex> locker(this->mutex);
 
     if(isNull())
         return -10;
@@ -48,6 +54,11 @@ int HFrameBuf::pop(HFrame *pFrame)
     if(frames.size()==0){
         return -20;
     }
+
+    this->buffer_not_empty.wait(locker, [this] {
+        return  !frames.empty();
+    });
+
 
     HFrame frame = std::move(frames.front());
     frames.pop_front();
@@ -66,12 +77,15 @@ int HFrameBuf::pop(HFrame *pFrame)
         frame.userdata=nullptr;
     }
 
+    locker.unlock();
+    this->buffer_not_full.notify_one();
+
     return 0;
 }
 
 void HFrameBuf::clear()
 {
-    std::lock_guard<std::mutex> locker(this->mutex);
+    std::unique_lock<std::mutex> locker(this->mutex);
     frames.clear();
     HRingBuf::clear();
 }

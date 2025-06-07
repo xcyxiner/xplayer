@@ -36,7 +36,7 @@ void HVideoWidget::start()
 
     }else{
         //
-        onOpenSucceed();
+      onOpenSucceed();
     }
 }
 

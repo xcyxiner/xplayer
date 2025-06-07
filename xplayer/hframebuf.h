@@ -20,6 +20,8 @@ public:
     int cache_num;
     std::deque<HFrame> frames;
     std::mutex mutex;
+    std::condition_variable buffer_not_full;
+    std::condition_variable buffer_not_empty;
 };
 
 #endif // HFRAMEBUF_H
