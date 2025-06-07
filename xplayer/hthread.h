@@ -31,9 +31,9 @@ public:
     }
 
     virtual void run(){
-        // while(status!= STOP){
+        while(status!= STOP){
             doTask();
-        // }
+        }
     }
 
     virtual bool doPrepare(){

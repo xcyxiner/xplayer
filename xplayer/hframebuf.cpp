@@ -12,12 +12,15 @@ int HFrameBuf::push(HFrame *pFrame)
 
 
     if(frames.size()>=(size_t)cache_num){
-        HFrame& frame=frames.front();
-        frames.pop_front();
-        free(frame.buf.len);
-        if(frame.userdata){
+        HFrame frame = std::move(frames.front()); // 移动所有权
+        frames.pop_front();  // 先移除，避免析构冲突
+
+        free(frame.buf.len);   // 安全释放内存
+        frame.buf = {nullptr, 0}; // 必须置空!
+
+        if (frame.userdata) {
             ::free(frame.userdata);
-            frame.userdata=NULL;
+            frame.userdata = nullptr;
         }
     }
     int ret=0;
@@ -54,6 +57,15 @@ int HFrameBuf::pop(HFrame *pFrame)
     }
 
     pFrame->copy(frame);
+
+    free(frame.buf.len);
+    frame.buf={nullptr,0};
+
+    if(frame.userdata){
+        ::free(frame.userdata);
+        frame.userdata=nullptr;
+    }
+
     return 0;
 }
 
