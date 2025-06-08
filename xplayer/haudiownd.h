@@ -3,7 +3,7 @@
 
 #include "hframe.h"
 #include <QWidget>
-
+#include "ffmpeg_util.h"
 class HAudioWnd : public QWidget
 {
     Q_OBJECT
@@ -13,7 +13,10 @@ public:
 signals:
 
 public:
-    HFrame last_frame;
+    virtual void playAudio();
+
+public:
+    AVFrame* last_frame;
 };
 
 #endif // HAUDIOWND_H

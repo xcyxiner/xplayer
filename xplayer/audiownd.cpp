@@ -5,3 +5,8 @@ AudioWnd::AudioWnd(QWidget *parent)
 {
 
 }
+
+void AudioWnd::playAudio()
+{
+
+}

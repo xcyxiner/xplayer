@@ -14,6 +14,10 @@ signals:
 
 public:
 
+
+    // HAudioWnd interface
+public:
+    virtual void playAudio() override;
 };
 
 #endif // AUDIOWND_H
