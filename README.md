@@ -1,5 +1,10 @@
 # xplayer
+## 1 参考hplayer
+源码位置: [hplayer](https://github.com/ithewei/hplayer)
+IDE工具:qt6
+编译器:msvc
 
+学习笔记: [ffmpeg播放器](https://juejin.cn/column/7499977945202458661)
 
 ## 2学习hplayer
 
