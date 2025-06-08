@@ -1,6 +1,7 @@
 #include "hvideowidget.h"
 #include "glwnd.h"
 #include "hffplayer.h"
+#include "sdl2audiownd.h"
 #include "ui_hvideowidget.h"
 #include <QTimer>
 HVideoWidget::HVideoWidget(QWidget *parent)
@@ -10,6 +11,8 @@ HVideoWidget::HVideoWidget(QWidget *parent)
     ui->setupUi(this);
     this->videownd=new GLWnd(this);
     this->aspect_ratio.type=ASPECT_FULL;
+
+    this->audiownd=new SDL2AudioWnd(this);
 
     this->timer=new QTimer(this);
     timer->setTimerType(Qt::PreciseTimer);
@@ -93,5 +96,9 @@ void HVideoWidget::onTimerUpdate()
     if(this->pImpl_player->pop_frame(&this->videownd->last_frame)==0){
         // update video frame
         videownd->update();
+        if(this->pImpl_player->audio_pop_frame(this->audiownd->last_frame)==0){
+            // update audio frame
+            audiownd->playAudio();
+        }
     }
 }

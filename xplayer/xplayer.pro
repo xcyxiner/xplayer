@@ -9,7 +9,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    audiownd.cpp \
     glwnd.cpp \
+    haudiownd.cpp \
+    havframebuf.cpp \
     hbuf.cpp \
     hffplayer.cpp \
     hframe.cpp \
@@ -23,12 +26,16 @@ SOURCES += \
     hvideownd.cpp \
     hglwidget.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    sdl2audiownd.cpp
 
 HEADERS += \
+    audiownd.h \
     avdef.h \
     ffmpeg_util.h \
     glwnd.h \
+    haudiownd.h \
+    havframebuf.h \
     hbuf.h \
     hffplayer.h \
     hframe.h \
@@ -42,7 +49,8 @@ HEADERS += \
     hvideowidget.h \
     hvideownd.h \
     hglwidget.h\
-    mainwindow.h
+    mainwindow.h \
+    sdl2audiownd.h
 
 FORMS += \
     hmultiview.ui \
@@ -58,6 +66,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 INCLUDEPATH +=$$PWD/3rd/include
 INCLUDEPATH +=$$PWD/3rd/include/GL
+INCLUDEPATH +=$$PWD/3rd/include/sdl2
 win32 {
     win32-msvc{
         LIBS += -lavformat      \
@@ -69,6 +78,7 @@ win32 {
 
         LIBS += -lopengl32 -lglu32
         LIBS += -lglew32
+        LIBS += -lSDL2
 
         DESTDIR = $$PWD/3rd/bin/msvc
         LIBS += -L$$PWD/3rd/lib/msvc

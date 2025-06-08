@@ -7,6 +7,8 @@ HFFPlayer::HFFPlayer() {
     fmt_ctx=NULL;
     codec_ctx = NULL;
     codec_opts=NULL;
+    audio_codec_ctx = NULL;
+    audio_codec_opts=NULL;
 }
 
 int HFFPlayer::start()
@@ -85,10 +87,14 @@ int HFFPlayer::open()
 
     //根据索引获取视频流
     AVStream* video_stream=fmt_ctx->streams[video_stream_index];
+    //根据索引获取音频流
+    AVStream* audio_stream=fmt_ctx->streams[audio_stream_index];
 
 
     //获取视频源文件编码
     AVCodecParameters* codec_param=video_stream->codecpar;
+    //获取音频文件编码
+    AVCodecParameters* audio_codec_param=audio_stream->codecpar;
 
     //解码器
     const AVCodec* codec=NULL;
@@ -103,6 +109,18 @@ int HFFPlayer::open()
         return ret;
     }
 
+    const AVCodec* audio_codec=NULL;
+    audio_codec=avcodec_find_decoder(audio_codec_param->codec_id);
+    if(audio_codec==NULL){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        ret=-31;
+        return ret;
+    }
+
     // 解码器上下文
     codec_ctx=avcodec_alloc_context3(codec);
     if(codec_ctx==NULL){
@@ -114,6 +132,18 @@ int HFFPlayer::open()
         ret=-40;
         return ret;
     }
+
+    audio_codec_ctx=avcodec_alloc_context3(audio_codec);
+    if(audio_codec_ctx==NULL){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        ret=-40;
+        return ret;
+    }
+
 
     // 配置解码上下文的解码参数
     ret=avcodec_parameters_to_context(codec_ctx,codec_param);
@@ -130,10 +160,30 @@ int HFFPlayer::open()
         return ret;
     }
 
+    ret=avcodec_parameters_to_context(audio_codec_ctx,audio_codec_param);
+    if(ret!=0){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        if(audio_codec_ctx){
+            avcodec_free_context(&audio_codec_ctx);
+            audio_codec_ctx=NULL;
+        }
+        return ret;
+    }
+
+
     //配置引用计数
     if(codec_ctx->codec_type==AVMEDIA_TYPE_VIDEO||
         codec_ctx->codec_type==AVMEDIA_TYPE_AUDIO){
         av_dict_set(&codec_opts,"refcounted_frames","1",0);
+    }
+
+    if(audio_codec_ctx->codec_type==AVMEDIA_TYPE_VIDEO||
+        audio_codec_ctx->codec_type==AVMEDIA_TYPE_AUDIO){
+        av_dict_set(&audio_codec_opts,"refcounted_frames","1",0);
     }
 
 
@@ -151,6 +201,21 @@ int HFFPlayer::open()
         }
         return ret;
     }
+
+    ret=avcodec_open2(audio_codec_ctx,audio_codec,&audio_codec_opts);
+    if(ret!=0){
+        if(fmt_ctx){
+            avformat_close_input(&fmt_ctx);
+            avformat_free_context(fmt_ctx);
+            fmt_ctx=NULL;
+        }
+        if(audio_codec_ctx){
+            avcodec_free_context(&audio_codec_ctx);
+            audio_codec_ctx=NULL;
+        }
+        return ret;
+    }
+
 
     // 原始视频宽高以及像素格式
     int sw,sh,dw,dh;
@@ -236,36 +301,60 @@ void HFFPlayer::doTask()
             av_packet_unref(this->packet);
             return;
         }
+        if (packet->stream_index == video_stream_index) {
+            ret=avcodec_send_packet(this->codec_ctx,this->packet);
+            if(ret!=0){
+                av_packet_unref(this->packet);
+                return;
+            }
 
+            ret= avcodec_receive_frame(this->codec_ctx,this->frame);
+            if(ret!=0){
 
-        if(this->packet->stream_index!= this->video_stream_index){
-            continue;
+            }else{
+                if(this->sws_ctx){
+                    int h=sws_scale(this->sws_ctx,this->frame->data,
+                                      this->frame->linesize,0,this->frame->height,this->data,this->linesize);
+                    if(h<=0 || h != this->frame->height){
+                        return;
+                    }
+                }
+                this->push_frame(&this->hframe);
+
+                break;
+            }
         }
+    }
 
+    while (!this->quit) {
+        av_init_packet(packet);
 
-        ret=avcodec_send_packet(this->codec_ctx,this->packet);
+        int ret=av_read_frame(this->fmt_ctx,this->packet);
+
         if(ret!=0){
+            if(!this->quit){
+
+            }
             av_packet_unref(this->packet);
             return;
         }
+        if (packet->stream_index == audio_stream_index) {
+            ret=avcodec_send_packet(this->audio_codec_ctx,this->packet);
+            if(ret!=0){
+                av_packet_unref(this->packet);
+                return;
+            }
 
-        ret= avcodec_receive_frame(this->codec_ctx,this->frame);
-        if(ret!=0){
+            ret= avcodec_receive_frame(this->audio_codec_ctx,this->frame);
+            if(ret!=0){
 
-        }else{
-            break;
+            }else{
+                this->audio_push_frame(this->frame);
+
+                break;
+            }
         }
     }
-
-    if(this->sws_ctx){
-        int h=sws_scale(this->sws_ctx,this->frame->data,
-                          this->frame->linesize,0,this->frame->height,this->data,this->linesize);
-        if(h<=0 || h != this->frame->height){
-            return;
-        }
-    }
-
-    this->push_frame(&this->hframe);
 }
 
 int HFFPlayer::stop()

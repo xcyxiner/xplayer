@@ -26,6 +26,9 @@ private:
     AVCodecContext* codec_ctx;
     AVDictionary*   codec_opts;
 
+    AVCodecContext* audio_codec_ctx;
+    AVDictionary*   audio_codec_opts;
+
     int video_stream_index;
     int audio_stream_index;
     int subtitle_stream_index;
