@@ -1,6 +1,7 @@
 #ifndef HVIDEOWIDGET_H
 #define HVIDEOWIDGET_H
 
+#include "haudiownd.h"
 #include "hmedia.h"
 #include "hvideoplayer.h"
 #include "hvideownd.h"
@@ -21,6 +22,7 @@ public:
 private:
     Ui::HVideoWidget *ui;
     HVideoWnd *videownd;
+    HAudioWnd *audiownd;
 
 public:
     aspect_ratio_t aspect_ratio;

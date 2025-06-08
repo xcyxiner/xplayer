@@ -20,6 +20,7 @@ public:
 
     void clear_frame_cache(){
         this->frame_buf.clear();
+        this->audio_frame_buf.clear();
     }
 
     int push_frame(HFrame* pFrame){
@@ -28,6 +29,14 @@ public:
 
     int pop_frame(HFrame* pFrame){
         return frame_buf.pop(pFrame);
+    }
+
+    int audio_push_frame(HFrame* pFrame){
+        return this->audio_frame_buf.push(pFrame);
+    }
+
+    int audio_pop_frame(HFrame* pFrame){
+        return this->audio_frame_buf.pop(pFrame);
     }
 
 public:
@@ -42,7 +51,8 @@ public:
 
     int         fps;
 protected:
-    HFrameBuf frame_buf;
+    HFrameBuf frame_buf;//视频帧
+    HFrameBuf audio_frame_buf;//音频帧
 };
 
 #endif // HVIDEOPLAYER_H

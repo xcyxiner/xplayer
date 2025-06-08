@@ -9,7 +9,9 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    audiownd.cpp \
     glwnd.cpp \
+    haudiownd.cpp \
     hbuf.cpp \
     hffplayer.cpp \
     hframe.cpp \
@@ -26,9 +28,11 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    audiownd.h \
     avdef.h \
     ffmpeg_util.h \
     glwnd.h \
+    haudiownd.h \
     hbuf.h \
     hffplayer.h \
     hframe.h \

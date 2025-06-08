@@ -238,11 +238,6 @@ void HFFPlayer::doTask()
         }
 
 
-        if(this->packet->stream_index!= this->video_stream_index){
-            continue;
-        }
-
-
         ret=avcodec_send_packet(this->codec_ctx,this->packet);
         if(ret!=0){
             av_packet_unref(this->packet);
@@ -257,15 +252,26 @@ void HFFPlayer::doTask()
         }
     }
 
-    if(this->sws_ctx){
-        int h=sws_scale(this->sws_ctx,this->frame->data,
-                          this->frame->linesize,0,this->frame->height,this->data,this->linesize);
-        if(h<=0 || h != this->frame->height){
-            return;
+    if(this->packet->stream_index== this->video_stream_index){
+        if(this->sws_ctx){
+            int h=sws_scale(this->sws_ctx,this->frame->data,
+                              this->frame->linesize,0,this->frame->height,this->data,this->linesize);
+            if(h<=0 || h != this->frame->height){
+                return;
+            }
         }
+
+        this->push_frame(&this->hframe);
     }
 
-    this->push_frame(&this->hframe);
+    if(this->packet->stream_index== this->audio_stream_index){
+        this->audio_push_frame(&this->hframe);
+    }
+
+    if(this->packet->stream_index== this->subtitle_stream_index){
+
+    }
+
 }
 
 int HFFPlayer::stop()

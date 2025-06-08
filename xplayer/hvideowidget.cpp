@@ -1,4 +1,5 @@
 #include "hvideowidget.h"
+#include "audiownd.h"
 #include "glwnd.h"
 #include "hffplayer.h"
 #include "ui_hvideowidget.h"
@@ -10,6 +11,8 @@ HVideoWidget::HVideoWidget(QWidget *parent)
     ui->setupUi(this);
     this->videownd=new GLWnd(this);
     this->aspect_ratio.type=ASPECT_FULL;
+
+    this->audiownd=new AudioWnd(this);
 
     this->timer=new QTimer(this);
     timer->setTimerType(Qt::PreciseTimer);
