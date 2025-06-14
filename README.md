@@ -38,3 +38,7 @@ IDE工具:qt6
 ### 2.6 分支 ffmpeg_play_22
 功能：正常播放视频,音频播放全是杂音
 [ffmpeg播放器22](https://juejin.cn/post/7513059488418742307)
+
+### 2.7 分支 ffmpeg_play_23
+功能：正常播放视频,音频播放正常
+[ffmpeg播放器23](https://juejin.cn/post/7515530796757876763)
