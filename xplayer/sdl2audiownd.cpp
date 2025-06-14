@@ -1,5 +1,6 @@
 #include "sdl2audiownd.h"
-
+#include <iostream>
+#include <QtEndian>
 SDL2AudioWnd::SDL2AudioWnd(QWidget *parent)
     : HAudioWnd(parent)
 {
@@ -75,7 +76,7 @@ bool SDL2AudioWnd::initSDLAudio()
     SDL_PauseAudioDevice(m_audioDeviceID, 0);
 
     qDebug() << "SDL2 audio initialized:"
-             << "Format:" << SDL_GetPixelFormatName(m_format)
+             << "Format:" << m_format
              << "Sample rate:" << m_sampleRate
              << "Channels:" << m_channels
              << "Buffer size:" << m_obtainedSpec.samples;
@@ -142,7 +143,7 @@ void SDL2AudioWnd::addAudioFrame(AVFrame *frame)
     int dataSize = frame->nb_samples * m_channels * bytesPerSample;
 
     // 转换为QByteArray
-    QByteArray audioData(reinterpret_cast<const char*>(frame->buf[0]), dataSize);
+    QByteArray audioData(reinterpret_cast<const char*>(frame->data[0]), dataSize);
 
     // 添加到队列（线程安全）
     std::lock_guard<std::mutex> lock(m_audioMutex);
@@ -155,40 +156,7 @@ void SDL2AudioWnd::addAudioFrame(AVFrame *frame)
         qWarning() << "Audio buffer overflow, dropped frame";
     }
 }
-SDL_AudioFormat SDL2AudioWnd::convertFFmpegToSDLFormat(AVSampleFormat fmt)
-{
-    switch (fmt) {
-    case AV_SAMPLE_FMT_U8:
-        return AUDIO_U8;
-    case AV_SAMPLE_FMT_S16:
-        return AUDIO_S16SYS;
-    case AV_SAMPLE_FMT_S32:
-        return AUDIO_S32SYS;
-    case AV_SAMPLE_FMT_FLT:
-        return AUDIO_F32SYS;
-    case AV_SAMPLE_FMT_DBL:
-        qWarning() << "Unsupported sample format: AV_SAMPLE_FMT_DBL";
-        return AUDIO_F32SYS; // 降级处理
-    case AV_SAMPLE_FMT_U8P:
-        qWarning() << "Unsupported planar format: AV_SAMPLE_FMT_U8P";
-        return AUDIO_U8;
-    case AV_SAMPLE_FMT_S16P:
-        qWarning() << "Unsupported planar format: AV_SAMPLE_FMT_S16P";
-        return AUDIO_S16SYS;
-    case AV_SAMPLE_FMT_S32P:
-        qWarning() << "Unsupported planar format: AV_SAMPLE_FMT_S32P";
-        return AUDIO_S32SYS;
-    case AV_SAMPLE_FMT_FLTP:
-        qWarning() << "Unsupported planar format: AV_SAMPLE_FMT_FLTP";
-        return AUDIO_F32SYS;
-    case AV_SAMPLE_FMT_DBLP:
-        qWarning() << "Unsupported planar format: AV_SAMPLE_FMT_DBLP";
-        return AUDIO_F32SYS;
-    default:
-        qWarning() << "Unknown sample format:" << fmt;
-        return AUDIO_S16SYS; // 默认格式
-    }
-}
+
 void SDL2AudioWnd::processAudioFrame(AVFrame *inputFrame)
 {
 
