@@ -17,8 +17,8 @@ signals:
 private:
     SDL_AudioDeviceID m_audioDeviceID = 0;
     SDL_AudioSpec m_obtainedSpec;
-    int m_sampleRate = 0;
-    int m_channels = 0;
+    int m_sampleRate = 44100;
+    int m_channels = 2;
     int m_currentOffset=0;
     SDL_AudioFormat m_format = AUDIO_S16;
     SwrContext* m_swrCtx = nullptr; // 声明重采样上下文变量
@@ -33,7 +33,6 @@ public:
     void fillAudioBuffer(Uint8* stream, int len);
     void addAudioFrame(AVFrame *frame);
     void processAudioFrame(AVFrame* frame);
-    SDL_AudioFormat convertFFmpegToSDLFormat(AVSampleFormat fmt);
     AVSampleFormat convertSDLToFFmpegFormat(SDL_AudioFormat sdlFormat);
     // HAudioWnd interface
 public:
